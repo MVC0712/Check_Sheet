@@ -218,7 +218,7 @@ $(document).on("click", "#Insert_list_content", function() {
     sendObj["ins_list_content_content"] = $("#ins_list_content_content").val();
     sendObj["ins_list_content_type"] = $("#ins_list_content_type").val();
     sendObj["ins_list_content_description"] = $("#ins_list_content_description").val();
-    sendObj["file_url"] = $("#file_url").val();
+    sendObj["file_url"] = $("#file_url").html();
     sendObj["list_check_id"] = $("#list_check__selected").find("td").eq(0).html();
     // myAjax.myAjax(fileName, sendObj);
 
@@ -318,7 +318,7 @@ function InsStaffCheck() {
     }
 };
 function InsCheck() {
-    InsCheck();
+    InsLineCheck();
     InsMachineCheck();
     InsListCheck();
     InsContentCheck();
@@ -349,3 +349,36 @@ $(document).on("keyup", ".text-input", function() {
     }
     InsCheck();
 });
+
+$("#file_upload").on("change", function () {
+    var file = $(this).prop("files")[0];
+    console.log(file.name);
+    $("#file_url").html(file.name);
+    $("#preview__button").prop("disabled", false);
+  });
+  $(document).on("change", "#file_upload", function () {
+    ajaxFileUpload();
+    fileName = "UpdateListContent.php";
+    sendData = {
+      targetId: $("#list_content__selected").find("td").eq(0).html(),
+      file_url: $("#file_url").html(),
+    };
+    myAjax.myAjax(fileName, sendData);
+  });
+  $(document).on("click", "#preview__button", function () {
+    window.open("../DailyReport/DailyReportSub.html");
+  });
+  function ajaxFileUpload() {
+    var file_data = $('#file_upload').prop('files')[0];
+    var form_data = new FormData();
+    form_data.append('file', file_data);
+    $.ajax({
+        url: "./php/FileUpload.php",
+        dataType: 'text',
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: form_data,
+        type: 'post',
+    });
+  };
