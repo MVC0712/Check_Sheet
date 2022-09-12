@@ -57,7 +57,11 @@ input {
     padding: 0px 2px;
     text-align: left;
 }
-
+select {
+    text-indent: 1px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
 button {
     width: 50px;
     height: 22px;
@@ -87,19 +91,15 @@ button {
 #ins_machine,
 #ins_list_check {
     width: 60px;
-    height: 20px;
 }
 #ins_list_content_content {
     width: 100px;
-    height: 20px;
 }
 #ins_list_content_type {
     width: 30px;
-    height: 20px;
 }
 #ins_list_content_description {
     width: 215px;
-    height: 20px;
 }
 #right,
 #left {
