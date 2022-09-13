@@ -366,7 +366,7 @@ $("#file_upload").on("change", function () {
     myAjax.myAjax(fileName, sendData);
   });
   $(document).on("click", "#preview__button", function () {
-    window.open("../DailyReport/DailyReportSub.html");
+    window.open("../AddForm/AddFormSub.html");
   });
   function ajaxFileUpload() {
     var file_data = $('#file_upload').prop('files')[0];
