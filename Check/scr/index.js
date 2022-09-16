@@ -19,62 +19,51 @@ const myAjax = {
   };
 
 $(function() {
-    // staff();
-    // makeSummaryTable();
-    // machine();
-    // line();
-    // part();
-    $("#save__button").prop("disabled", true);
-    $("#update").prop("disabled", true);
-    $("#test__button").remove();
-    $("#delete-record__button").remove();
+    inputSession();
+    staff();
+    line();
+    machine();
+    list_check();
+    list_content();
 });
-
-function makeSummaryTable() {
-    var fileName = "SelSummary.php";
+function clearSession() {
+    sessionStorage.clear();
+    inputSession();
+};
+function inputSession() {
+    if (sessionStorage.active_staff ==null) {
+        let staff_code = prompt("Please enter your Emp No:", "");
+        var fileName = "SearchStaff.php";
+        var sendData = {
+            staff_code: staff_code,
+        };
+        myAjax.myAjax(fileName, sendData);
+        if (ajaxReturnData.length !=0){
+            sessionStorage.setItem("active_staff", JSON.stringify(ajaxReturnData));
+            var active = sessionStorage.getItem("active_staff");
+            alert(JSON.parse(active)[0].staff_name + " is activating!");
+        } else {
+            alert("Your Emp No dose not exist!");
+            inputSession();
+        }
+    }
+};
+function line() {
+    var fileName = "SelLine.php";
     var sendData = {
         dummy: "dummy",
     };
     myAjax.myAjax(fileName, sendData);
-    fillTableBody(ajaxReturnData, $("#summary__table tbody"));
-    make_action();
-    Insert_check();
-    Update_check();
-}
-
+    fillTableBody(ajaxReturnData, $("#line tbody"));
+};
 function staff() {
     var fileName = "SelStaff.php";
     var sendData = {
         dummy: "dummy",
     };
     myAjax.myAjax(fileName, sendData);
-    $("#staff option").remove();
-    $("#staff").append($("<option>").val(0).html("NO select"));
-    ajaxReturnData.forEach(function(value) {
-        $("#staff").append(
-            $("<option>").val(value["id"]).html(value["staff_name"])
-        );
-    });
+    fillTableBody(ajaxReturnData, $("#staff tbody"));
 };
-
-function fillTableBody(data, tbodyDom) {
-    $(tbodyDom).empty();
-    data.forEach(function(trVal) {
-        let newTr = $("<tr>");
-        Object.keys(trVal).forEach(function(tdVal) {
-            if (tdVal == "duration") {
-                $("<td>").append($("<input>").val(trVal[tdVal])).appendTo(newTr);
-            } else {
-                $("<td>").html(trVal[tdVal]).appendTo(newTr);
-            }
-        });
-
-        $(newTr).appendTo(tbodyDom);
-    });
-    Insert_check();
-    Update_check();
-}
-
 function machine() {
     var fileName = "SelMachine.php";
     var sendData = {
@@ -83,119 +72,94 @@ function machine() {
     myAjax.myAjax(fileName, sendData);
     fillTableBody(ajaxReturnData, $("#machine tbody"));
 };
-
-function part() {
-    var fileName = "SelPart.php";
+function list_check() {
+    var fileName = "SelListCheck.php";
     var sendData = {
         dummy: "dummy",
     };
     myAjax.myAjax(fileName, sendData);
-    fillTableBody(ajaxReturnData, $("#work tbody"));
-}
-
-function line() {
-    var fileName = "SelLine.php";
+    fillTableBody(ajaxReturnData, $("#list_check tbody"));
+};
+function list_content() {
+    var fileName = "SelListContent.php";
     var sendData = {
         dummy: "dummy",
     };
     myAjax.myAjax(fileName, sendData);
-    fillTableBody(ajaxReturnData, $("#line tbody"));
-}
-
-// -------------------------   summary table tr click   -------------
-$(document).on("click", "#summary__table tbody tr", function() {
-    var fileName = "SelSelHis.php";
-    var sendData = new Object();
-    if (!$(this).hasClass("selected-record")) {
-        $(this).parent().find("tr").removeClass("selected-record");
-        $(this).addClass("selected-record");
-        $("#summary__table__selected").removeAttr("id");
-        $(this).attr("id", "summary__table__selected");
-        sendData = {
-            targetId: $("#summary__table__selected").find("td").eq(5).html(),
-        };
-        myAjax.myAjax(fileName, sendData);
-        document.getElementById("ma_po").innerHTML = ajaxReturnData[0].machine+"-"+ajaxReturnData[0].part_position;
-        fillTableBodyh(ajaxReturnData, $("#history__summary tbody"));
-    } else {
-        $(this).removeClass("selected-record");
-        $(this).removeAttr("id");
-        $("#insert").prop("disabled", false);
-    }
-    Insert_check();
-    Update_check();
-    document.getElementById("file_area").innerHTML = ``;
-});
-
-$(document).on("click", "#history__summary tbody tr", function() {
-    var fileName = "SelFile.php";
-    var sendData = new Object();
-    if (!$(this).hasClass("selected-record")) {
-        $(this).parent().find("tr").removeClass("selected-record");
-        $(this).addClass("selected-record");
-        $("#history__summary__selected").removeAttr("id");
-        $(this).attr("id", "history__summary__selected");
-        Insert_check();
-        Update_check();
-        sendData = {
-            targetId: $("#history__summary__selected").find("td").eq(0).html(),
-        };
-        myAjax.myAjax(fileName, sendData);
-        console.log(ajaxReturnData);
-
-        document.getElementById("file_area").innerHTML = ``;
-        ajaxReturnData.forEach(function(value) {
-            var file_name = value["attached_file"];
-            if (file_name.length !== 0) {
-                $("<object>")
-                .attr("data", "../upload/Maintenance/" + file_name)
-                .attr("type", "image/jpeg")
-                .appendTo("#file_area");
-                console.log(file_name);
+    fillTableBody(ajaxReturnData, $("#list_content tbody"));
+};
+function fillTableBody(data, tbodyDom) {
+    $(tbodyDom).empty();
+    data.forEach(function(trVal) {
+        let newTr = $("<tr>");
+        Object.keys(trVal).forEach(function(tdVal) {
+            if ((tdVal == "staff_name") || (tdVal == "staff_code") || 
+            (tdVal == "line") || (tdVal == "machine") || (tdVal == "list_check")) {
+                $("<td>").append($("<input>").val(trVal[tdVal])).appendTo(newTr);
+            } else if (tdVal == "position_id") {
+                $("<td>").append(positionSelect(trVal[tdVal])).appendTo(newTr);
+            } else if (tdVal == "line_id") {
+                $("<td>").append(lineSelect(trVal[tdVal])).appendTo(newTr);
+            } else if (tdVal == "join_date") {
+                $("<td>").append(makeDate(trVal[tdVal])).appendTo(newTr);
+            } else {
+                $("<td>").html(trVal[tdVal]).appendTo(newTr);
             }
         });
 
-        var fileName = "SelSelUpdate.php";
-        var sendData = new Object();
-        sendData = {
-            targetId: $("#history__summary__selected").find("td").eq(0).html(),
-        };
-        myAjax.myAjax(fileName, sendData);
-        console.log(ajaxReturnData);
-
-        let line_id=ajaxReturnData[0].line_id;
-        let machine_id=ajaxReturnData[0].machine_id;
-        let part_position_id=ajaxReturnData[0].part_position_id;
-        let staff_id=ajaxReturnData[0].staff_id;
-        let maintenance_start=ajaxReturnData[0].maintenance_start;
-        let normal=ajaxReturnData[0].normal;
-        let note=ajaxReturnData[0].note;
-
-        $("#staff").val(staff_id);
-        $("#staff").removeClass("no-input").addClass("complete-input");
-        $("#note").val(note);
-        $("#normal").val(normal);
-        $("#maintenance_start").val(maintenance_start);
-        $("#maintenance_start").removeClass("no-input").addClass("complete-input");
-        select_row(line_id, $("#line tbody tr"), "line__selected");
-        select_row(machine_id, $("#machine tbody tr"), "machine__selected");
-
-        var fileName = "SelPartPosition.php";
-        var sendData = {
-            machine_id: machine_id,
-        };
-        myAjax.myAjax(fileName, sendData);
-        fillTableBody(ajaxReturnData, $("#work tbody"));
-        select_row(part_position_id, $("#work tbody tr"), "work__selected");
-
-    } else {
-        $(this).removeClass("selected-record");
-        $(this).removeAttr("id");
-        $("#insert").prop("disabled", false);
-    }
-    Insert_check();
-    Update_check();
-});
+        $(newTr).appendTo(tbodyDom);
+    });
+};
+function positionSelect(seletedId) {
+    let targetDom = $("<select>");
+    fileName = "SelPosition.php";
+    sendData = {
+    };
+    myAjax.myAjax(fileName, sendData);
+    ajaxReturnData.forEach(function(element) {
+        if (element["id"] == seletedId) {
+            $("<option>")
+                .html(element["position"])
+                .val(element["id"])
+                .prop("selected", true)
+                .appendTo(targetDom);
+        } else {
+            $("<option>")
+                .html(element["position"])
+                .val(element["id"])
+                .appendTo(targetDom);
+        }
+    });
+    return targetDom;
+};
+function lineSelect(seletedId) {
+    let targetDom = $("<select>");
+    fileName = "Selline.php";
+    sendData = {
+    };
+    myAjax.myAjax(fileName, sendData);
+    ajaxReturnData.forEach(function(element) {
+        if (element["id"] == seletedId) {
+            $("<option>")
+                .html(element["line"])
+                .val(element["id"])
+                .prop("selected", true)
+                .appendTo(targetDom);
+        } else {
+            $("<option>")
+                .html(element["line"])
+                .val(element["id"])
+                .appendTo(targetDom);
+        }
+    });
+    return targetDom;
+};
+function makeDate(datePlan) {
+    let targetDom = $("<input>");
+    targetDom.attr("type", "date");
+    targetDom.val(datePlan);
+    return targetDom;
+};
 
 $(document).on("click", "#line tbody tr", function() {
     if (!$(this).hasClass("selected-record")) {
@@ -206,10 +170,12 @@ $(document).on("click", "#line tbody tr", function() {
     } else {
         $(this).removeClass("selected-record");
         $(this).removeAttr("id");
-        $("#insert").prop("disabled", false);
+        $("#machine tbody").empty();
+        $("#list_check tbody").empty();
+        $("#list_content tbody").empty();
     }
+    InsCheck();
 });
-
 $(document).on("click", "#machine tbody tr", function() {
     var fileName = "SelPartPosition.php";
     if (!$(this).hasClass("selected-record")) {
@@ -217,422 +183,163 @@ $(document).on("click", "#machine tbody tr", function() {
         $(this).addClass("selected-record");
         $("#machine__selected").removeAttr("id");
         $(this).attr("id", "machine__selected");
-        InsWork_check();
-        Update_check();
+        var sendData = {
+            line_id : $("#line__selected").find("td").eq(0).html(),
+        };
+        // myAjax.myAjax(fileName, sendData);
+        // fillTableBody(ajaxReturnData, $("#work tbody"));
+    } else {
+        $(this).removeClass("selected-record");
+        $(this).removeAttr("id");
+        $("#list_check tbody").empty();
+        $("#list_content tbody").empty();
+    }
+    InsCheck();
+});
+$(document).on("click", "#list_check tbody tr", function() {
+    var fileName = "SelPartPosition.php";
+    if (!$(this).hasClass("selected-record")) {
+        $(this).parent().find("tr").removeClass("selected-record");
+        $(this).addClass("selected-record");
+        $("#list_check__selected").removeAttr("id");
+        $(this).attr("id", "list_check__selected");
         var sendData = {
             machine_id: $("#machine__selected").find("td").eq(0).html(),
         };
-        myAjax.myAjax(fileName, sendData);
-        fillTableBody(ajaxReturnData, $("#work tbody"));
+        // myAjax.myAjax(fileName, sendData);
+        // fillTableBody(ajaxReturnData, $("#work tbody"));
     } else {
         $(this).removeClass("selected-record");
         $(this).removeAttr("id");
-        $("#insert").prop("disabled", false);
-        $("#work tbody").empty();
-        InsWork_check();
-        Update_check();
+        $("#list_content tbody").empty();
     }
+    InsCheck();
 });
-
-$(document).on("click", "#work tbody tr", function() {
+$(document).on("click", "#list_content tbody tr", function() {
     if (!$(this).hasClass("selected-record")) {
-        // $(this).parent().find("tr").removeClass("selected-record");
-        $(this).addClass("selected-record");
-        // $("#work__selected").removeAttr("id");
-        $(this).attr("id", "work__selected");
-    } else {
-        $(this).removeClass("selected-record");
-        $(this).removeAttr("id");
-        // $("#insert").prop("disabled", false);
-    }
-    Insert_check();
-    Update_check();
-});
-
-
-function InsWork_check() {
-    if ((($("#duration").val().length == 0)|| 
-        ($("#ins_work").val().length == 0)||
-        (!$("#machine tbody tr").hasClass("selected-record")))) {
-        $("#Insert_work").prop("disabled", true);
-    } else {
-        $("#Insert_work").prop("disabled", false);
-    }
-};
-
-function Insert_check() {
-    if (($("#maintenance_start").val() == "")|| 
-        ($("#staff").val() == 0)||
-        (!$("#machine tbody tr").hasClass("selected-record")) ||
-        (!$("#line tbody tr").hasClass("selected-record")) ||
-        (!$("#work tbody tr").hasClass("selected-record"))) {
-        $("#insert").prop("disabled", true);
-    } else {
-        $("#insert").prop("disabled", false);
-    }
-};
-
-function Update_check() {
-    if (($("#maintenance_start").val() == "")|| 
-        ($("#staff").val() == 0)||
-        (!$("#machine tbody tr").hasClass("selected-record")) ||
-        (!$("#line tbody tr").hasClass("selected-record")) ||
-        (!$("#history__summary tbody tr").hasClass("selected-record")) ||
-        (!$("#work tbody tr").hasClass("selected-record"))) {
-        $("#update").prop("disabled", true);
-    } else {
-        $("#update").prop("disabled", false);
-    }
-};
-
-$(document).on("click", "#insert", function() {
-    var fileName = "InsMaintenanceV2.php";
-    var sendObj = new Object();
-    $("#work tbody tr").each(function() {
-        if ($(this).hasClass("selected-record")) {
-            sendObj[$(this).find("td").eq(0).html()] = $(this).find("td").eq(0).html();
-        }
-    });
-    sendObj["maintenance_start"] =getDate(new Date($("#maintenance_start").val()));
-    sendObj["note"] = $("#note").val();
-    sendObj["normal"] = $("#normal").val();
-    sendObj["staff"] = $("#staff").val();
-    sendObj["line"] = $("#line__selected").find("td").eq(0).html();
-    sendObj["machine"] = $("#machine__selected").find("td").eq(0).html();
-
-    myAjax.myAjax(fileName, sendObj);
-    let lid = ajaxReturnData.id;
-    if (document.getElementById("file").files.length == 0) {
-        console.log("khong co file");
-    } else {
-        console.log("co file");
-        var totalfiles = document.getElementById("file").files.length;
-        var formData = new FormData();
-        for (var index = 0; index < totalfiles; index++) {
-          formData.append("files[]", document.getElementById("file").files[index]);
-        }
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "FileUploadMultiple.php", true);
-        xhttp.onreadystatechange = function() {
-           if (this.readyState == 4 && this.status == 200) {
-              var response = this.responseText;
-              alert(response + " File uploaded.");
-           }
-        };
-        xhttp.send(formData);
-
-        var sendFileName = new Object();
-        var inp = document.getElementById('file');
-        for (var i = 0; i < inp.files.length; ++i) {
-          var name = inp.files.item(i).name;
-          console.log("here is a file name: " + name);
-          sendFileName[i] = name;
-        }
-        sendFileName["t_maintenance_history_id"]=lid;
-        console.log(sendFileName);
-        var InsFileName = "InsFileName.php";
-        myAjax.myAjax(InsFileName, sendFileName);
-    }
-    $("#insert").prop("disabled", true);
-    $("#note").val("");
-    $("#file").val("");
-    $("#maintenance_start").val("");
-    $("#maintenance_start").removeClass("complete-input").addClass("no-input");
-    makeSummaryTable();
-});
-
-$(document).on("click", "#update", function() {
-    var fileName = "UpdateDataV2.php";
-    var sendObj = new Object();
-    sendObj["maintenance_start"] =getDateTime(new Date($("#maintenance_start").val()));
-    sendObj["note"] = $("#note").val();
-    sendObj["normal"] = $("#normal").val();
-    sendObj["staff"] = $("#staff").val();
-    sendObj["line"] = $("#line__selected").find("td").eq(0).html();
-    sendObj["part_position"] = $("#work__selected").find("td").eq(0).html();
-    if (!$("#history__summary").hasClass("selected-record")) {
-        sendObj["targetId"] = $("#history__summary__selected").find("td").eq(0).html();
-    }
-    myAjax.myAjax(fileName, sendObj);
-    console.log(sendObj);
-    if (document.getElementById("file").files.length == 0) {
-        console.log("khong co file");
-    } else {
-        console.log("co file");
-        var totalfiles = document.getElementById("file").files.length;
-        var formData = new FormData();
-        for (var index = 0; index < totalfiles; index++) {
-          formData.append("files[]", document.getElementById("file").files[index]);
-        }
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "FileUploadMultiple.php", true);
-        xhttp.onreadystatechange = function() {
-           if (this.readyState == 4 && this.status == 200) {
-              var response = this.responseText;
-              alert(response + " File uploaded.");
-           }
-        };
-        xhttp.send(formData);
-
-        var sendFileName = new Object();
-        var inp = document.getElementById('file');
-        for (var i = 0; i < inp.files.length; ++i) {
-          var name = inp.files.item(i).name;
-          console.log("here is a file name: " + name);
-          sendFileName[i] = name;
-        }
-        sendFileName["t_maintenance_history_id"]=sendObj["targetId"];
-        console.log(sendFileName);
-        var InsFileName = "InsFileName.php";
-        myAjax.myAjax(InsFileName, sendFileName);
-    }
-    $("#insert").prop("disabled", true);
-    $("#update").prop("disabled", true);
-    $("#note").val("");
-    $("#file").val("");
-    $("#maintenance_start").val("");
-    $("#maintenance_start").removeClass("complete-input").addClass("no-input");
-    makeSummaryTable();
-});
-
-const getTwoDigits = (value) => value < 10 ? `0${value}` : value;
-const getDateTime = (date) => {
-    const day = getTwoDigits(date.getDate());
-    const month = getTwoDigits(date.getMonth() + 1);
-    const year = date.getFullYear();
-    const hours = getTwoDigits(date.getHours());
-    const mins = getTwoDigits(date.getMinutes());
-    return `${year}-${month}-${day} ${hours}:${mins}:00`;
-}
-const getDate = (date) => {
-    const day = getTwoDigits(date.getDate());
-    const month = getTwoDigits(date.getMonth() + 1);
-    const year = date.getFullYear();
-    return `${year}-${month}-${day}`;
-}
-
-$(document).on("change", "#maintenance_start", function() {
-    var a= $("#maintenance_start").val();
-    b=new Date(a)
-    c=getDateTime(b)
-    console.log(c)
-    if ($(this).val() != "") {
-        $(this).removeClass("no-input").addClass("complete-input");
-    } else {
-        $(this).removeClass("complete-input").addClass("no-input");
-    }
-    Insert_check();
-    Update_check();
-});
-
-$(document).on("change", "#staff", function() {
-    if ($(this).val() != 0) {
-        $(this).removeClass("no-input").addClass("complete-input");
-    } else {
-        $(this).removeClass("complete-input").addClass("no-input");
-    }
-    Insert_check();
-    Update_check();
-});
-
-function fillTableBodyh(data, tbodyDom) {
-    $(tbodyDom).empty();
-    data.forEach(function(trVal) {
-        let newTr = $("<tr>");
-        Object.keys(trVal).forEach(function(tdVal, index) {
-            $("<td>").html(trVal[tdVal]).appendTo(newTr);
-        });
-        $(newTr).appendTo(tbodyDom);
-    });
-}
-
-$(document).on("click", "#ma__table tbody tr", function() {
-    let update;
-    var fileName = "SelSelFile.php";
-    var sendData = new Object();
-    document.getElementById("file_area").innerHTML = ``;
-    if (!$(this).hasClass("selected-record")) {
-        let update = true;
         $(this).parent().find("tr").removeClass("selected-record");
         $(this).addClass("selected-record");
-        $("#die__table__selected").removeAttr("id");
-        $(this).attr("id", "die__table__selected");
-        sendData = {
-            targetId: $("#die__table__selected").find("td").eq(0).html(),
-        };
-        myAjax.myAjax(fileName, sendData);
-
-        $("#line").val(ajaxReturnData[0].line_id);
-        $("#line").removeClass("no-input").addClass("complete-input");
-        $("#machine").val(ajaxReturnData[0].machine_id);
-        $("#machine").removeClass("no-input").addClass("complete-input");
-        $("#part_position").val(ajaxReturnData[0].part_position_id);
-        $("#part_position").removeClass("no-input").addClass("complete-input");
-        $("#maintenance_start").val(ajaxReturnData[0].maintenance_start);
-        $("#maintenance_start").removeClass("no-input").addClass("complete-input");
-        $("#maintenance_finish").val(ajaxReturnData[0].maintenance_finish);
-        $("#maintenance_finish").removeClass("no-input").addClass("complete-input");
-        $("#note").val(ajaxReturnData[0].note);
-
-        $("<button>Update</button>").attr("id", "update").appendTo("#ins__data");
-
-        var filename = ajaxReturnData[0].file_url;
-        var fileType = filename.substr(filename.lastIndexOf(".") + 1, 3);
-        if (filename.length !== 0) {
-            switch (fileType) {
-                case "pdf":
-                case "PDF":
-                    $("<object>")
-                        .attr(
-                            "data",
-                            "../upload/Maintenance/" + filename + "#toolbar=0&navpanes=0")
-                        .attr("type", "application/pdf")
-                        .appendTo("#file_area");
-                    break;
-                case "jpe":
-                case "JPE":
-                case "jpg":
-                case "JPG":
-                case "png":
-                case "PNG":
-                    $("<object>")
-                        .attr("data", "../upload/Maintenance/" + filename)
-                        .attr("type", "image/jpeg")
-                        .appendTo("#file_area");
-                    break;
-            }
-        } else if (filename === null) {
-            let update = false; 
-            document.getElementById("file_area").innerHTML = ``;
-        }
+        $("#list_content__selected").removeAttr("id");
+        $(this).attr("id", "list_content__selected");
     } else {
         $(this).removeClass("selected-record");
-        document.getElementById("file_area").innerHTML = ``;
-        $("#update").remove();
+        $(this).removeAttr("id");
     }
+    InsCheck();
 });
-
-function make_action() {
-    var table, tr, act, txt_act, i;
-    table = document.getElementById("summary__table");
-    tr = table.getElementsByTagName("tr");
-    for (i = 0; i < tr.length; i++) {
-        act = tr[i].getElementsByTagName("td")[11];
-        if (act) {
-            txt_act = act.innerText.replace(",", "");
-            if (txt_act=="IT" ) {
-                table.rows[i].style.backgroundColor = "#ffc870";
-            } else {
-            } 
-        }
-    }
-};
-
-$(document).on("change", "#work input", function() {
-    fileName = "UpdateWork.php";
-
-    sendData = {
-        id: $("#work__selected").find("td").eq(0).html(),
-        duration: $("#work__selected td:nth-child(3) input").val(),
-    };
-    myAjax.myAjax(fileName, sendData);
-    // console.log(sendData);
-});
-
-$(document).on("keyup", "#ins_line", function() {
-    if ($(this).val().length != 0) {
-        $(this).removeClass("no-input").addClass("complete-input");
-        $("#Insert_line").prop("disabled", false);
+$(document).on("click", "#staff tbody tr", function() {
+    if (!$(this).hasClass("selected-record")) {
+        $(this).parent().find("tr").removeClass("selected-record");
+        $(this).addClass("selected-record");
+        $("#staff__selected").removeAttr("id");
+        $(this).attr("id", "staff__selected");
     } else {
-        $(this).removeClass("complete-input").addClass("no-input");
-        $("#Insert_line").prop("disabled", true);
+        $(this).removeClass("selected-record");
+        $(this).removeAttr("id");
     }
-    Insert_check();
-    Update_check();
-});
-
-$(document).on("keyup", "#ins_machine", function() {
-    if ($(this).val().length != 0) {
-        $(this).removeClass("no-input").addClass("complete-input");
-        $("#Insert_machine").prop("disabled", false);
-    } else {
-        $(this).removeClass("complete-input").addClass("no-input");
-        $("#Insert_machine").prop("disabled", true);
-    }
-    Insert_check();
-    Update_check();
-});
-
-$(document).on("keyup", "#ins_work", function() {
-    if ($(this).val().length != 0) {
-        $(this).removeClass("no-input").addClass("complete-input");
-    } else {
-        $(this).removeClass("complete-input").addClass("no-input");
-    }
-    InsWork_check();
-    Update_check();
-});
-
-$(document).on("keyup", "#duration", function() {
-    if ($(this).val().length != 0) {
-        $(this).removeClass("no-input").addClass("complete-input");
-    } else {
-        $(this).removeClass("complete-input").addClass("no-input");
-    }
-    InsWork_check();
-    Update_check();
+    InsCheck();
 });
 
 $(document).on("click", "#Insert_line", function() {
     var fileName = "InsLine.php";
     var sendObj = new Object();
     sendObj["line"] = $("#ins_line").val();
-    myAjax.myAjax(fileName, sendObj);
-    console.log(sendObj)
+    // myAjax.myAjax(fileName, sendObj);
+
+    var fileName = "SelLine.php";
+    var sendData = {
+        // line_id: $("#line__selected").find("td").eq(0).html(),
+    };
+    // myAjax.myAjax(fileName, sendData);
+    // fillTableBody(ajaxReturnData, $("#line tbody"));
 
     $("#ins_line").val("");
     $("#ins_line").removeClass("complete-input").addClass("no-input");
     $("#Insert_line").prop("disabled", true);
-    Insert_check();
-    Update_check();
 });
-
 $(document).on("click", "#Insert_machine", function() {
     var fileName = "InsMachine.php";
     var sendObj = new Object();
     sendObj["machine"] = $("#ins_machine").val();
-    myAjax.myAjax(fileName, sendObj);
-    console.log(sendObj)
+    sendObj["line_id"] = $("#line__selected").find("td").eq(0).html();
+    // myAjax.myAjax(fileName, sendObj);
+
+    var fileName = "SelListCheck.php";
+    var sendData = {
+        line_id: $("#line__selected").find("td").eq(0).html(),
+    };
+    // myAjax.myAjax(fileName, sendData);
+    // fillTableBody(ajaxReturnData, $("#machine tbody"));
 
     $("#ins_machine").val("");
     $("#ins_machine").removeClass("complete-input").addClass("no-input");
     $("#Insert_machine").prop("disabled", true);
-    Insert_check();
-    Update_check();
 });
-
-$(document).on("click", "#Insert_work", function() {
-    var fileName = "InsWork.php";
+$(document).on("click", "#Insert_list_check", function() {
+    var fileName = "InsListCheck.php";
     var sendObj = new Object();
-    sendObj["part_position"] = $("#ins_work").val();
-    sendObj["duration"] = $("#duration").val();
+    sendObj["ins_list_check"] = $("#ins_list_check").val();
     sendObj["machine_id"] = $("#machine__selected").find("td").eq(0).html();
-    myAjax.myAjax(fileName, sendObj);
+    // myAjax.myAjax(fileName, sendObj);
 
-    var fileName = "SelPartPosition.php";
+    var fileName = "SelListCheck.php";
     var sendData = {
         machine_id: $("#machine__selected").find("td").eq(0).html(),
     };
-    myAjax.myAjax(fileName, sendData);
-    fillTableBody(ajaxReturnData, $("#work tbody"));
+    // myAjax.myAjax(fileName, sendData);
+    // fillTableBody(ajaxReturnData, $("#list_check tbody"));
 
-    $("#ins_work").val("");
-    $("#ins_work").removeClass("complete-input").addClass("no-input");
-    $("#duration").val("");
-    $("#duration").removeClass("complete-input").addClass("no-input");
-    $("#Insert_work").prop("disabled", true);
-    Insert_check();
-    Update_check();
+    $("#ins_list_check").val("");
+    $("#ins_list_check").removeClass("complete-input").addClass("no-input");
+    $("#Insert_list_check").prop("disabled", true);
+});
+$(document).on("click", "#Insert_list_content", function() {
+    var fileName = "InsListContent.php";
+    var sendObj = new Object();
+    sendObj["ins_list_content_content"] = $("#ins_list_content_content").val();
+    sendObj["ins_list_content_type"] = $("#ins_list_content_type").val();
+    sendObj["ins_list_content_description"] = $("#ins_list_content_description").val();
+    sendObj["file_url"] = $("#file_url").html();
+    sendObj["list_check_id"] = $("#list_check__selected").find("td").eq(0).html();
+    // myAjax.myAjax(fileName, sendObj);
+
+    var fileName = "SelListContent.php";
+    var sendData = {
+        list_check_id: $("#list_check__selected").find("td").eq(0).html(),
+    };
+    // myAjax.myAjax(fileName, sendData);
+    // fillTableBody(ajaxReturnData, $("#list_content tbody"));
+
+    $("#ins_list_content_content").val("");
+    $("#ins_list_content_content").removeClass("complete-input").addClass("no-input");
+    $("#ins_list_content_type").val(0);
+    $("#ins_list_content_type").removeClass("complete-input").addClass("no-input");
+    $("#ins_list_content_description").val("");
+    $("#ins_list_content_description").removeClass("complete-input").addClass("no-input");
+    $("#Insert_list_content").prop("disabled", true);
+});
+$(document).on("click", "#Insert_staff", function() {
+    var fileName = "InsStaff.php";
+    var sendObj = new Object();
+    sendObj["ins_staff_name"] = $("#ins_staff_name").val();
+    sendObj["ins_staff_code"] = $("#ins_staff_code").val();
+    sendObj["ins_staff_position"] = $("#ins_staff_position").val();
+    sendObj["ins_staff_join"] = $("#ins_staff_join").val();
+    sendObj["ins_staff_line"] = $("#ins_staff_line").val();
+    myAjax.myAjax(fileName, sendObj);
+
+    $("#ins_staff_name").val("");
+    $("#ins_staff_name").removeClass("complete-input").addClass("no-input");
+    $("#ins_staff_code").val("");
+    $("#ins_staff_code").removeClass("complete-input").addClass("no-input");
+    $("#ins_staff_position").val(0);
+    $("#ins_staff_position").removeClass("complete-input").addClass("no-input");
+    $("#ins_staff_join").val("");
+    $("#ins_staff_join").removeClass("complete-input").addClass("no-input");
+    $("#ins_staff_line").val(0);
+    $("#ins_staff_line").removeClass("complete-input").addClass("no-input");
+    $("#Insert_staff").prop("disabled", true);
+    staff();
 });
 
 function select_row(targetId, targetDom, id) {
@@ -645,6 +352,114 @@ function select_row(targetId, targetDom, id) {
             $(targetDom).scrollTop(19 * index);
         }
     });
-    Insert_check();
-    Update_check();
 };
+
+function InsLineCheck() {
+    if ($("#ins_line").val().length == 0) {
+        $("#Insert_line").prop("disabled", true);
+    } else {
+        $("#Insert_line").prop("disabled", false);
+    }
+};
+function InsMachineCheck() {
+    if ((($("#ins_machine").val().length == 0)|| 
+        (!$("#line tbody tr").hasClass("selected-record")))) {
+        $("#Insert_machine").prop("disabled", true);
+    } else {
+        $("#Insert_machine").prop("disabled", false);
+    }
+};
+function InsListCheck() {
+    if ((($("#ins_list_check").val().length == 0)|| 
+        (!$("#machine tbody tr").hasClass("selected-record")))) {
+        $("#Insert_list_check").prop("disabled", true);
+    } else {
+        $("#Insert_list_check").prop("disabled", false);
+    }
+};
+function InsContentCheck() {
+    if ((($("#ins_list_content_content").val().length == 0)|| 
+        ($("#ins_list_content_type").val() == 0)||
+        ($("#ins_list_content_description").val().length == 0)||
+        (!$("#list_check tbody tr").hasClass("selected-record")))) {
+        $("#Insert_list_content").prop("disabled", true);
+    } else {
+        $("#Insert_list_content").prop("disabled", false);
+    }
+};
+function InsStaffCheck() {
+    if ((($("#ins_staff_name").val().length == 0)|| 
+        ($("#ins_staff_code").val().length == 0)||
+        ($("#ins_list_content_type").val() == 0)||
+        ($("#ins_staff_join").val() == "")||
+        ($("#ins_staff_line").val().length == 0))) {
+        $("#Insert_staff").prop("disabled", true);
+    } else {
+        $("#Insert_staff").prop("disabled", false);
+    }
+};
+function InsCheck() {
+    InsLineCheck();
+    InsMachineCheck();
+    InsListCheck();
+    InsContentCheck();
+    InsStaffCheck();
+};
+
+$(document).on("change", ".select-input", function() {
+    if ($(this).val() != 0) {
+        $(this).removeClass("no-input").addClass("complete-input");
+    } else {
+        $(this).removeClass("complete-input").addClass("no-input");
+    }
+    InsCheck();
+});
+$(document).on("change", ".date-input", function() {
+    if ($(this).val() != "") {
+        $(this).removeClass("no-input").addClass("complete-input");
+    } else {
+        $(this).removeClass("complete-input").addClass("no-input");
+    }
+    InsCheck();
+});
+$(document).on("keyup", ".text-input", function() {
+    if ($(this).val() != "") {
+        $(this).removeClass("no-input").addClass("complete-input");
+    } else {
+        $(this).removeClass("complete-input").addClass("no-input");
+    }
+    InsCheck();
+});
+
+$("#file_upload").on("change", function () {
+    var file = $(this).prop("files")[0];
+    console.log(file.name);
+    $("#file_url").html(file.name);
+    $("#preview__button").prop("disabled", false);
+  });
+  $(document).on("change", "#file_upload", function () {
+    ajaxFileUpload();
+    fileName = "UpdateListContent.php";
+    sendData = {
+      targetId: $("#list_content__selected").find("td").eq(0).html(),
+      file_url: $("#file_url").html(),
+    };
+    myAjax.myAjax(fileName, sendData);
+  });
+  $(document).on("click", "#preview__button", function () {
+    window.open("../AddForm/AddFormSub.html");
+  });
+  function ajaxFileUpload() {
+    var file_data = $('#file_upload').prop('files')[0];
+    var form_data = new FormData();
+    form_data.append('file', file_data);
+    $.ajax({
+        url: "./php/FileUpload.php",
+        dataType: 'text',
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: form_data,
+        type: 'post',
+    });
+  };

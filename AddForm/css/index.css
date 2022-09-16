@@ -122,10 +122,12 @@ button {
 #list_check tbody {
     width: 120px;
     height: 150px;
+    overflow: auto;
 }
 #list_content tbody {
     width: 410px;
     height: 150px;
+    overflow: auto;
 }
 
 #line th,
@@ -153,6 +155,12 @@ button {
 #list_check tr th:nth-child(2),
 #list_check tr td:nth-child(2) {
     width: 100px;
+}
+#line tr td:nth-child(2) input,
+#machine tr td:nth-child(2) input,
+#list_check tr td:nth-child(2) input {
+    width: 98%;
+    border: none;
 }
 #list_content tr th:nth-child(2),
 #list_content tr td:nth-child(2) {
@@ -218,8 +226,9 @@ object {
 }
 
 #staff tbody {
-    width: 495px;
+    width: 505px;
     height: 150px;
+    overflow: auto;
 }
 #staff tr th:nth-child(1),
 #staff tr td:nth-child(1) {
@@ -228,6 +237,17 @@ object {
 #staff tr th:nth-child(2),
 #staff tr td:nth-child(2) {
     width: 130px;
+}
+#staff tr td:nth-child(2) input,
+#staff tr td:nth-child(3) input,
+#staff tr td:nth-child(4) select,
+#staff tr td:nth-child(6) select {
+    width: 100%;
+    border: none;
+}
+#staff tr td:nth-child(5) input {
+    width: 98px;
+    border: none;
 }
 #staff tr th:nth-child(3),
 #staff tr td:nth-child(3) {
@@ -239,7 +259,7 @@ object {
 }
 #staff tr th:nth-child(5),
 #staff tr td:nth-child(5) {
-    width: 90px;
+    width: 100px;
 }
 #staff tr th:nth-child(6),
 #staff tr td:nth-child(6) {
