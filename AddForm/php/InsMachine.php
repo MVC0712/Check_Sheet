@@ -4,13 +4,10 @@ $dbh = new DBHandler();
 if ($dbh->getInstance() === null) {
     die("No database connection");
 }
-if ($_POST['line_id'] != 0) {
-    $line_id = $_POST['line_id'];
-    $sql = "SELECT id, machine FROM check_sheet.t_machine WHERE line_id = '$line_id';";
-} else {
-    $sql = "SELECT id, machine FROM check_sheet.t_machine;";
-}
+$line_id = $_POST['line_id'];
+$machine = $_POST['machine'];
 try {
+    $sql = "INSERT INTO t_machine(line_id, machine) VALUES ('$line_id','$machine')";
     $stmt = $dbh->getInstance()->prepare($sql);
     $stmt->execute();
     echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
