@@ -25,13 +25,13 @@
 .left__wrapper {
     display: flex;
     flex-direction: column;
-    width: 560px;
+    width: 160px;
     height: 100%;
     align-items: center;
 }
 
 .right__wrapper {
-    width: calc(798px - 620px);
+    width: calc(798px - 160px);
     height: 100%;
     flex-direction: column;
     align-items: center;
@@ -84,84 +84,46 @@ button {
 }
 /* +++++++++++++++  summary table ++++++++++++++ */
 
-#summary__table {
+#content {
     width: 500px;
 }
 
-#summary__table tbody {
+#content tbody {
     height: 315px;
     width: 555px;
 }
 
-#summary__table th:nth-child(1),
-#summary__table td:nth-child(1),
-#summary__table th:nth-child(2),
-#summary__table td:nth-child(2) {
+#content th:nth-child(1),
+#content td:nth-child(1) {
     display: none;
 }
 
-#summary__table th:nth-child(3),
-#summary__table td:nth-child(3) {
+#content th:nth-child(2),
+#content td:nth-child(2) {
+    width: 100px;
+}
+
+#content th:nth-child(3),
+#content td:nth-child(3) {
+    width: 200px;
+}
+
+#content th:nth-child(4),
+#content td:nth-child(4) {
     width: 70px;
 }
 
-#summary__table td:nth-child(3) {
-    text-align: left;
-}
-
-#summary__table th:nth-child(4),
-#summary__table td:nth-child(4) {
-    display: none;
-}
-
-#summary__table th:nth-child(5),
-#summary__table td:nth-child(5) {
+#content th:nth-child(5),
+#content td:nth-child(5) {
     width: 80px;
 }
 
-#summary__table td:nth-child(5) {
+#content td:nth-child(5) {
     text-align: left;
 }
 
-#summary__table th:nth-child(6),
-#summary__table td:nth-child(6) {
-    display: none;
-}
-
-#summary__table th:nth-child(7),
-#summary__table td:nth-child(7) {
-    width: 80px;
-}
-
-#summary__table td:nth-child(7) {
-    text-align: left;
-}
-
-#summary__table th:nth-child(8),
-#summary__table td:nth-child(8) {
-    width: 35px;
-}
-
-#summary__table td:nth-child(8) {
-    text-align: left;
-}
-
-#summary__table th:nth-child(9),
-#summary__table td:nth-child(9),
-#summary__table th:nth-child(10),
-#summary__table td:nth-child(10),
-#summary__table th:nth-child(13),
-#summary__table td:nth-child(13) {
-    width: 70px;
-}
-
-#summary__table th:nth-child(11),
-#summary__table td:nth-child(11) {
-    width: 35px;
-}
-
-#summary__table th:nth-child(12),
-#summary__table td:nth-child(12){
+#content th:nth-child(6),
+#content td:nth-child(6) {
     display: none;
 }
 
