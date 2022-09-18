@@ -119,7 +119,7 @@ function fillTableBody(data, tbodyDom) {
         if (trVal.content_type_id == 1) {
             $("<td>").append(selectValue(1)).appendTo(newTr);
         }else {
-            $("<td>").append($("<input>").val("")).appendTo(newTr);
+            $("<td>").append($("<input>").val("").addClass("no-input text-input")).appendTo(newTr);
         }
         $(newTr).appendTo(tbodyDom);
     });
@@ -210,6 +210,7 @@ $(document).on("click", "#content tbody tr", function() {
         $(this).removeClass("selected-record");
         $(this).removeAttr("id");
     }
+    checkInput();
 });
 $(document).on("change", ".select-input", function() {
     if ($(this).val() != 0) {
@@ -217,6 +218,7 @@ $(document).on("change", ".select-input", function() {
     } else {
         $(this).removeClass("complete-input").addClass("no-input");
     }
+    checkInput();
 });
 $(document).on("change", ".date-input", function() {
     if ($(this).val() != "") {
@@ -224,6 +226,7 @@ $(document).on("change", ".date-input", function() {
     } else {
         $(this).removeClass("complete-input").addClass("no-input");
     }
+    checkInput();
 });
 $(document).on("keyup", ".text-input", function() {
     if ($(this).val() != "") {
@@ -231,4 +234,55 @@ $(document).on("keyup", ".text-input", function() {
     } else {
         $(this).removeClass("complete-input").addClass("no-input");
     }
+    checkInput();
 });
+
+$(document).on("click", "#save__button", function () {
+    var fileName = "InsData.php";
+    tableData = getTableData($("#content tbody tr"))
+      jsonData = JSON.stringify(tableData);
+      var sendData = {
+          data : jsonData,
+          check_date : $("#check_date").val(),
+          staff_check_id : JSON.parse(active)[0].id,
+      };
+      console.log(sendData);
+    myAjax.myAjax(fileName, sendData);
+    $("#content tbody tr").remove();
+    $("#list_check_select").val(0).removeClass("complete-input").addClass("no-input");
+});
+function getTableData(tableTrObj) {
+    var tableData = [];
+    tableTrObj.each(function (index, element) {
+      var tr = [];
+      $(this)
+        .find("td")
+        .each(function (index, element) {
+          if ($(this).find("input").length) {
+            tr.push($(this).find("input").val());
+          } else if ($(this).find("select").length) {
+            tr.push($(this).find("select").val());
+          } else {
+            tr.push($(this).html());
+          }
+        });
+      tableData.push(tr);
+    });
+    return tableData;
+};
+function checkInput() {
+    let check = true;
+    if ($("#content tbody tr").length == 0) {
+        check = false;
+    };
+    $("#content tbody tr input").each(function() {
+      if ($(this).hasClass("no-input")) {
+        check = false;
+      }
+    });
+    if (check) {
+      $("#save__button").attr("disabled", false);
+    } else {
+      $("#save__button").attr("disabled", true);
+    } 
+};

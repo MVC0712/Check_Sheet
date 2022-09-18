@@ -13,11 +13,24 @@
     <div class="main__wrapper">
         <div class="upper__wrapper">
             <div class="left__wrapper">
-                <div id="active_staff"></div>
-                <button id="log_out">Log out</button>
-                <input id="check_date" class="date-input" type="date">
-                <select id="machine_select" class="no-input select-input"></select>
-                <select id="list_check_select" class="no-input select-input"></select>
+                <div id="active_area">
+                    <div id="active_staff" class="input-block__outer"></div>
+                    <button id="log_out">Log out</button>
+                </div>
+                <div class="input-block__outer code_outer">
+                    <div class="input__title code_title">Check date</div>
+                    <input id="check_date" class="date-input" type="date">
+                </div>
+                <div class="input-block__outer code_outer">
+                    <div class="input__title code_title">Machine</div>
+                    <select id="machine_select" class="no-input select-input"></select>
+                </div>
+                <div class="input-block__outer code_outer">
+                    <div class="input__title code_title">List</div>
+                    <select id="list_check_select" class="no-input select-input">
+                        <option value="0">NO select</option>
+                    </select>
+                </div>
             </div>
             <div class="right__wrapper">
                 <table id="content">
@@ -33,11 +46,17 @@
                     </thead>
                     <tbody></tbody>
                 </table>
+                <button id="save__button" disabled>Save</button>
             </div>
         </div>
         <div class="lower__wrapper">
+            <div class="lower_left__wrapper">
 
-    </div>
+            </div>
+            <div class="lower_right__wrapper">
+
+            </div>
+        </div>
     </div>
     <script src="../Lib/jquery.min.js"></script>
     <script src="./scr/index.js"></script>
