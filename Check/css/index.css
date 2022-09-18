@@ -84,13 +84,13 @@ button {
 }
 /* +++++++++++++++  summary table ++++++++++++++ */
 
-#content {
-    width: 500px;
-}
+/* #content {
+    width: 550px;
+} */
 
 #content tbody {
     height: 315px;
-    width: 555px;
+    width: 570px;
 }
 
 #content th:nth-child(1),
@@ -115,16 +115,18 @@ button {
 
 #content th:nth-child(5),
 #content td:nth-child(5) {
-    width: 80px;
-}
-
-#content td:nth-child(5) {
-    text-align: left;
+    display: none;
 }
 
 #content th:nth-child(6),
 #content td:nth-child(6) {
-    display: none;
+    width: 100px;
+}
+
+#content td:nth-child(6) input,
+#content td:nth-child(6) select {
+    border: none;
+    width: 96%;
 }
 
 .title {

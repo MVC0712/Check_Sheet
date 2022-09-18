@@ -6,9 +6,9 @@ if ($dbh->getInstance() === null) {
 }
 if ($_POST['list_check_id'] != 0) {
     $list_check_id = $_POST['list_check_id'];
-    $sql = "SELECT id, content, check_type_id, description, file_url FROM check_sheet.t_content WHERE list_check_id = '$list_check_id';";
+    $sql = "SELECT id, content, check_type_id, description, content_type_id FROM check_sheet.t_content WHERE list_check_id = '$list_check_id';";
 } else {
-    $sql = "SELECT id, content, check_type_id, description, file_url FROM check_sheet.t_content;";
+    $sql = "SELECT id, content, check_type_id, description, content_type_id FROM check_sheet.t_content;";
 }
 try {
     $stmt = $dbh->getInstance()->prepare($sql);

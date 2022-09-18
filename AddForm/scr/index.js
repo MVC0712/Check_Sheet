@@ -123,10 +123,16 @@ function fillTableBody(data, tbodyDom) {
         let newTr = $("<tr>");
         Object.keys(trVal).forEach(function(tdVal) {
             if ((tdVal == "staff_name") || (tdVal == "staff_code") || 
-                (tdVal == "line") || (tdVal == "machine") || (tdVal == "list_check")) {
+                (tdVal == "line") || (tdVal == "machine") || 
+                (tdVal == "content") || (tdVal == "description") || 
+                (tdVal == "list_check")) {
                 $("<td>").append($("<input>").val(trVal[tdVal])).appendTo(newTr);
             } else if (tdVal == "position_id") {
                 $("<td>").append(positionSelect(trVal[tdVal])).appendTo(newTr);
+            } else if (tdVal == "check_type_id") {
+                $("<td>").append(checkType(trVal[tdVal])).appendTo(newTr);
+            } else if (tdVal == "content_type_id") {
+                $("<td>").append(checkTypeSelect(trVal[tdVal])).appendTo(newTr);
             } else if (tdVal == "line_id") {
                 $("<td>").append(lineSelect(trVal[tdVal])).appendTo(newTr);
             } else if (tdVal == "join_date") {
@@ -177,6 +183,56 @@ function lineSelect(seletedId) {
         } else {
             $("<option>")
                 .html(element["line"])
+                .val(element["id"])
+                .appendTo(targetDom);
+        }
+    });
+    return targetDom;
+};
+function checkType(seletedId) {
+    let targetDom = $("<select>");
+    var ctype = [{
+        id : 1,
+        ct : "Daily"
+    },{
+        id : 2,
+        ct : "Weekly"
+    }]
+    ctype.forEach(function(element) {
+        if (element["id"] == seletedId) {
+            $("<option>")
+                .html(element["ct"])
+                .val(element["id"])
+                .prop("selected", true)
+                .appendTo(targetDom);
+        } else {
+            $("<option>")
+                .html(element["ct"])
+                .val(element["id"])
+                .appendTo(targetDom);
+        }
+    });
+    return targetDom;
+};
+function checkTypeSelect(seletedId) {
+    let targetDom = $("<select>");
+    var ctypes = [{
+        id : 1,
+        cts : "OK/NG"
+    },{
+        id : 2,
+        cts : "Value"
+    }]
+    ctypes.forEach(function(element) {
+        if (element["id"] == seletedId) {
+            $("<option>")
+                .html(element["cts"])
+                .val(element["id"])
+                .prop("selected", true)
+                .appendTo(targetDom);
+        } else {
+            $("<option>")
+                .html(element["cts"])
                 .val(element["id"])
                 .appendTo(targetDom);
         }
@@ -299,15 +355,19 @@ $(document).on("click", "#Insert_list_content", function() {
     var sendObj = new Object();
     sendObj["ins_list_content_content"] = $("#ins_list_content_content").val();
     sendObj["ins_list_content_type"] = $("#ins_list_content_type").val();
+    sendObj["ins_list_content_type_select"] = $("#ins_list_content_type_select").val();
     sendObj["ins_list_content_description"] = $("#ins_list_content_description").val();
     sendObj["file_url"] = $("#file_url").html();
     sendObj["list_check_id"] = $("#list_check__selected").find("td").eq(0).html();
     myAjax.myAjax(fileName, sendObj);
     list_content();
+    $("#file_url").html("");
     $("#ins_list_content_content").val("");
     $("#ins_list_content_content").removeClass("complete-input").addClass("no-input");
     $("#ins_list_content_type").val(0);
     $("#ins_list_content_type").removeClass("complete-input").addClass("no-input");
+    $("#ins_list_content_type_select").val(0);
+    $("#ins_list_content_type_select").removeClass("complete-input").addClass("no-input");
     $("#ins_list_content_description").val("");
     $("#ins_list_content_description").removeClass("complete-input").addClass("no-input");
     $("#Insert_list_content").prop("disabled", true);
@@ -335,7 +395,68 @@ $(document).on("click", "#Insert_staff", function() {
     $("#Insert_staff").prop("disabled", true);
     staff();
 });
-
+$(document).on("change", "#line tbody tr td", function () {
+    let sendData = new Object();
+    let fileName;
+    fileName = "UpdateLineData.php";
+    sendData = {
+      targetId : $("#line__selected td:nth-child(1)").html(),
+      line_data : $("#line__selected td:nth-child(2) input").val(),
+    };
+    myAjax.myAjax(fileName, sendData);
+    line();
+});
+$(document).on("change", "#machine tbody tr td", function () {
+    let sendData = new Object();
+    let fileName;
+    fileName = "UpdateMachineData.php";
+    sendData = {
+      targetId : $("#machine__selected td:nth-child(1)").html(),
+      machine_data : $("#machine__selected td:nth-child(2) input").val(),
+    };
+    myAjax.myAjax(fileName, sendData);
+    machine();
+});
+$(document).on("change", "#list_check tbody tr td", function () {
+    let sendData = new Object();
+    let fileName;
+    fileName = "UpdateListCheckData.php";
+    sendData = {
+      targetId : $("#list_check__selected td:nth-child(1)").html(),
+      list_check_data : $("#list_check__selected td:nth-child(2) input").val(),
+    };
+    myAjax.myAjax(fileName, sendData);
+    list_check();
+});
+$(document).on("change", "#list_content tbody tr td", function () {
+    let sendData = new Object();
+    let fileName;
+    fileName = "UpdateListContentData.php";
+    sendData = {
+      targetId : $("#list_content__selected td:nth-child(1)").html(),
+      content : $("#list_content__selected td:nth-child(2) input").val(),
+      check_type_id : $("#list_content__selected td:nth-child(3) select").val(),
+      description : $("#list_content__selected td:nth-child(4) input").val(),
+      content_type_id : $("#list_content__selected td:nth-child(5) select").val(),
+    };
+    myAjax.myAjax(fileName, sendData);
+    list_content();
+});
+$(document).on("change", "#staff tbody tr td", function () {
+    let sendData = new Object();
+    let fileName;
+    fileName = "UpdateStaffData.php";
+    sendData = {
+      targetId : $("#staff__selected td:nth-child(1)").html(),
+      name : $("#staff__selected td:nth-child(2) input").val(),
+      code : $("#staff__selected td:nth-child(3) input").val(),
+      position : $("#staff__selected td:nth-child(4) select").val(),
+      join_date : $("#staff__selected td:nth-child(5) input").val(),
+      line_id : $("#staff__selected td:nth-child(6) select").val(),
+    };
+    myAjax.myAjax(fileName, sendData);
+    staff();
+});
 function select_row(targetId, targetDom, id) {
     targetDom.each(function(index, element) {
         if ($(element).find("td").eq(0).text() == targetId) {
@@ -374,6 +495,7 @@ function InsListCheck() {
 function InsContentCheck() {
     if ((($("#ins_list_content_content").val().length == 0)|| 
         ($("#ins_list_content_type").val() == 0)||
+        ($("#ins_list_content_type_select").val() == 0)||
         ($("#ins_list_content_description").val().length == 0)||
         (!$("#list_check tbody tr").hasClass("selected-record")))) {
         $("#Insert_list_content").prop("disabled", true);
@@ -384,7 +506,7 @@ function InsContentCheck() {
 function InsStaffCheck() {
     if ((($("#ins_staff_name").val().length == 0)|| 
         ($("#ins_staff_code").val().length == 0)||
-        ($("#ins_list_content_type").val() == 0)||
+        ($("#ins_staff_position").val() == 0)||
         ($("#ins_staff_join").val() == "")||
         ($("#ins_staff_line").val().length == 0))) {
         $("#Insert_staff").prop("disabled", true);

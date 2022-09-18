@@ -96,10 +96,13 @@ button {
     width: 100px;
 }
 #ins_list_content_type {
-    width: 30px;
+    width: 50px;
+}
+#ins_list_content_type_select {
+    width: 50px;
 }
 #ins_list_content_description {
-    width: 215px;
+    width: 160px;
 }
 #right,
 #left {
@@ -125,7 +128,7 @@ button {
     overflow: auto;
 }
 #list_content tbody {
-    width: 410px;
+    width: 420px;
     height: 150px;
     overflow: auto;
 }
@@ -166,9 +169,13 @@ button {
 #list_content tr td:nth-child(2) {
     width: 100px;
 }
+#list_content tr td:nth-child(2) input {
+    width: 97px;
+    border: none;
+}
 #list_check tr th:nth-child(2),
 #list_check tr td:nth-child(2) {
-    width: 90px;
+    width: 100px;
 }
 
 #list_check tr th:nth-child(3),
@@ -177,15 +184,31 @@ button {
 }
 #list_content tr th:nth-child(3),
 #list_content tr td:nth-child(3) {
-    width: 30px;
+    width: 50px;
+}
+#list_content tr td:nth-child(3) select {
+    width: 47px;
+    border: none;
+    margin: 0;
+    padding: 0;
 }
 #list_content tr th:nth-child(4),
 #list_content tr td:nth-child(4) {
-    width: 130px;
+    width: 190px;
+}
+#list_content tr td:nth-child(4) input {
+    width: 187px;
+    border: none;
 }
 #list_content tr th:nth-child(5),
 #list_content tr td:nth-child(5) {
-    width: 130px;
+    width: 50px;
+}
+#list_content tr td:nth-child(5) select {
+    width: 98%;
+    border: none;
+    margin: 0;
+    padding: 0;
 }
 #list_check tr input {
     border: 0px solid #ffffff;

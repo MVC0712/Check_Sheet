@@ -21,9 +21,15 @@ const myAjax = {
 $(function() {
     inputSession();
     machine();
-    // list_check();
-    // list_content();
     $('#active_staff').html(JSON.parse(active)[0].staff_name);
+    var formatDateComponent = function(dateComponent) {
+        return (dateComponent < 10 ? '0' : '') + dateComponent;
+      };
+    
+      var formatDate = function(date) {
+        return date.getFullYear()  + '-' + formatDateComponent(date.getMonth() + 1) + '-' + formatDateComponent(date.getDate()) ;
+      };
+    $("#check_date").val(formatDate(new Date()));
 });
 $(document).on("click", "#log_out", function() {
     $('#active_staff').html('');
@@ -100,30 +106,44 @@ function fillTableBody(data, tbodyDom) {
                 $("<td>").append(lineSelect(trVal[tdVal])).appendTo(newTr);
             } else if (tdVal == "join_date") {
                 $("<td>").append(makeDate(trVal[tdVal])).appendTo(newTr);
+            } else if (tdVal == "/") {
+                if (trVal[tdVal].content_type_id == 1) {
+                    $("<td>").append(selectValue(trVal[tdVal])).appendTo(newTr);
+                }else {
+                    $("<td>").append($("<input>").val(trVal[tdVal])).appendTo(newTr);
+                }
             } else {
                 $("<td>").html(trVal[tdVal]).appendTo(newTr);
             }
         });
-        $("<td>").append($("<input>").val("")).appendTo(newTr);
+        if (trVal.content_type_id == 1) {
+            $("<td>").append(selectValue(1)).appendTo(newTr);
+        }else {
+            $("<td>").append($("<input>").val("")).appendTo(newTr);
+        }
         $(newTr).appendTo(tbodyDom);
     });
 };
-function positionSelect(seletedId) {
+function selectValue(seletedId) {
     let targetDom = $("<select>");
-    fileName = "SelPosition.php";
-    sendData = {
-    };
-    myAjax.myAjax(fileName, sendData);
-    ajaxReturnData.forEach(function(element) {
+    select_value = [{
+        id : 1,
+        sel : "O"
+    },
+    {
+        id : 2,
+        sel : "X"
+    }]
+    select_value.forEach(function(element) {
         if (element["id"] == seletedId) {
             $("<option>")
-                .html(element["position"])
+                .html(element["sel"])
                 .val(element["id"])
                 .prop("selected", true)
                 .appendTo(targetDom);
         } else {
             $("<option>")
-                .html(element["position"])
+                .html(element["sel"])
                 .val(element["id"])
                 .appendTo(targetDom);
         }

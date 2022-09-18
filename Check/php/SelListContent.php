@@ -7,14 +7,21 @@ if ($dbh->getInstance() === null) {
 $list_check_id = $_POST['list_check_id'];
 try {
     $sql = "SELECT 
-        t_content.id, content, description, check_type
-    FROM
-        check_sheet.t_content
-    LEFT JOIN
-        t_list_check ON t_list_check.id = t_content.list_check_id
-    LEFT JOIN
-        m_check_type ON m_check_type.id = t_content.check_type_id 
-    WHERE list_check_id = '$list_check_id';";
+    t_content.id,
+    content,
+    description,
+    check_type,
+    content_type_id
+FROM
+    check_sheet.t_content
+        LEFT JOIN
+    t_list_check ON t_list_check.id = t_content.list_check_id
+        LEFT JOIN
+    m_check_type ON m_check_type.id = t_content.check_type_id
+        LEFT JOIN
+    m_content_type ON m_content_type.id = t_content.content_type_id
+    WHERE list_check_id = '$list_check_id'
+    ORDER BY check_type ASC;";
     $stmt = $dbh->getInstance()->prepare($sql);
     $stmt->execute();
     echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
