@@ -4,14 +4,9 @@ $dbh = new DBHandler();
 if ($dbh->getInstance() === null) {
     die("No database connection");
 }
-$datetime = date("Y-m-d H:i:s");
+$line_id = $_POST['line_id'];
 try {
-    $sql = "SELECT 
-    t_casting.id,
-    code
-FROM
-    billet_casting.t_casting
-    ORDER BY product_date DESC;";
+    $sql = "SELECT id, machine FROM check_sheet.t_machine WHERE line_id = '$line_id';";
     $stmt = $dbh->getInstance()->prepare($sql);
     $stmt->execute();
     echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));

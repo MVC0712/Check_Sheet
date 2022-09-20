@@ -19,7 +19,7 @@ const myAjax = {
   };
 
 $(function() {
-    inputSession();
+    // inputSession();
     staff();
     line();
     machine();

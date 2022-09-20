@@ -98,9 +98,10 @@ function list_content() {
     var fileName = "SelListContent.php";
     var sendData = {
         list_check_id : $("#list_check_select").val(),
+        check_date : $("#check_date").val(),
     };
     myAjax.myAjax(fileName, sendData);
-    fillTableBody(ajaxReturnData, $("#content tbody"));
+    fillTableBodyS(ajaxReturnData, $("#content tbody"));
 };
 function fillTableBody(data, tbodyDom) {
     $(tbodyDom).empty();
@@ -265,18 +266,18 @@ $(document).on("keyup", ".text-input", function() {
     checkInput();
 });
 
-$(document).on("click", "#save__button", function () {
+$(document).on("click", "#confirm__button", function () {
     var fileName = "InsData.php";
     tableData = getTableData($("#content tbody tr"))
       jsonData = JSON.stringify(tableData);
       var sendData = {
           data : jsonData,
           check_date : $("#check_date").val(),
-          staff_check_id : JSON.parse(active)[0].id,
+          staff_confirm_id : JSON.parse(active)[0].id,
       };
       console.log(sendData);
     myAjax.myAjax(fileName, sendData);
-    makeSummaryTable()
+    makeSummaryTable();
     $("#content tbody tr").remove();
     $("#list_check_select").val(0).removeClass("complete-input").addClass("no-input");
 });
@@ -310,8 +311,8 @@ function checkInput() {
       }
     });
     if (check) {
-      $("#save__button").attr("disabled", false);
+      $("#confirm__button").attr("disabled", false);
     } else {
-      $("#save__button").attr("disabled", true);
+      $("#confirm__button").attr("disabled", true);
     } 
 };
