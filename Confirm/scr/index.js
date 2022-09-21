@@ -52,7 +52,7 @@ function inputSession() {
             active = sessionStorage.getItem("active_staff");
             alert(JSON.parse(active)[0].staff_name + " is activating!");
         } else {
-            alert("Your Emp No dose not exist!");
+            alert("Your Emp No does not exist or does not has permission!");
             inputSession();
         }
     }

@@ -4,29 +4,20 @@ $dbh = new DBHandler();
 if ($dbh->getInstance() === null) {
     die("No database connection");
 }
-  $data = "";
-  $staff_check_id = "";
+$data = "";
+$staff_confirm_id = "";
 
-  $data = $_POST['data'];
-  $staff_check_id = $_POST['staff_check_id'];
-  $data_json = json_decode($data);
+$data = $_POST['data'];
+$staff_confirm_id = $_POST['staff_confirm_id'];
+$data_json = json_decode($data);
 
 try {
     foreach ($data_json as $val) {
-        $sql_paramater[] = "('{$val[0]}', '{$staff_check_id}', '{$check_date}', '{$val[5]}')";
-
-        $sqlsub = "DELETE FROM t_record WHERE content_id = content_id AND check_date = '{$check_date}'";
-        $stmt = $dbh->getInstance()->prepare($sqlsub);
+        $sql = "UPDATE t_record SET staff_comfirm_id = '$staff_confirm_id' WHERE id = '{$val[0]}'";
+        $stmt = $dbh->getInstance()->prepare($sql);
         $stmt->execute();
-        $sqlsub = "";
-
+        $sql = "";
     };
-    $sql = "INSERT INTO t_record ";
-    $sql = $sql."(content_id ,staff_check_id, check_date, check_value) VALUES ";
-    $sql = $sql.join(",", $sql_paramater);
-
-    $stmt = $dbh->getInstance()->prepare($sql);
-    $stmt->execute();
     echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
 } 
 catch(PDOException $e) {

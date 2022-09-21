@@ -10,47 +10,24 @@
   <body>
     <header>Home Page</header>
       <div style="flex-direction: row; display:flex;">
-            <button id="plan">Plan</button>
-            <button id="mold_history">Mold History</button>
-            <button id="daily_input">Daily Input</button>
-            <button id="homogenizing_input">Homogenizing Input</button>
-            <button id="cutting_input">Cutting Input</button>
-            <button id="mea_file">Measurement File</button>
+            <button id="add_form">Add form</button>
+            <button id="check">Check page</button>
+            <button id="confirm">Confirm page</button>
+            <button id="month_summary">Month summary page</button>
       </div>
       <script src="./Lib/jquery.min.js"></script>
       <script>
-        let fileName;
-        let sendData = new Object();
-        let ajaxReturnData;
-        const myAjax = {
-          myAjax: function (fileName, sendData) {
-            $.ajax({
-              type: "POST",
-              url: "./Lib/"+fileName,
-              dataType: "json",
-              data: sendData,
-              async: false,
-            })
-              .done(function (data) {
-                ajaxReturnData = data;
-              })
-              .fail(function () {
-                alert("DB connect error");
-              });
-          },
-        };
-        $(function () {
-          var now = new Date();
-          var MonthLastDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-          var MonthFirstDate = new Date(now.getFullYear(), (now.getMonth() + 12) % 12, 1);
-          var formatDateComponent = function(dateComponent) {
-            return (dateComponent < 10 ? '0' : '') + dateComponent;
-          };
-          var formatDate = function(date) {
-            return date.getFullYear()  + '-' + formatDateComponent(date.getMonth() + 1) + '-' + formatDateComponent(date.getDate()) ;
-          };
-          var a = formatDate(MonthFirstDate);
-          var b = formatDate(MonthLastDate);
+        $(document).on("click", "#add_form", function () {
+          window.open("/Check_Sheet/AddForm");
+        });
+        $(document).on("click", "#check", function () {
+          window.open("/Check_Sheet/Check");
+        });
+        $(document).on("click", "#confirm", function () {
+          window.open("/Check_Sheet/Confirm");
+        });
+        $(document).on("click", "#month_summary", function () {
+          window.open("/Check_Sheet/MonthSummary");
         });
       </script>
 </html>
