@@ -1,6 +1,14 @@
 let ajaxReturnData;
 const getTwoDigits = (value) => value < 10 ? `0${value}` : value;
 let active = sessionStorage.getItem("active_staff");
+
+let formatDateComponent = function(dateComponent) {
+    return (dateComponent < 10 ? '0' : '') + dateComponent;
+};
+let formatDate = function(date) {
+    return date.getFullYear()  + '-' + formatDateComponent(date.getMonth() + 1) + '-' + formatDateComponent(date.getDate()) ;
+};
+
 const myAjax = {
     myAjax: function (fileName, sendData) {
       $.ajax({
@@ -20,16 +28,9 @@ const myAjax = {
 };
 $(function() {
     inputSession();
-    machine();
     var now = new Date();
     var MonthLastDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
     var MonthFirstDate = new Date(now.getFullYear(), (now.getMonth() + 12) % 12, 1);
-    var formatDateComponent = function(dateComponent) {
-      return (dateComponent < 10 ? '0' : '') + dateComponent;
-    };
-    var formatDate = function(date) {
-      return date.getFullYear()  + '-' + formatDateComponent(date.getMonth() + 1) + '-' + formatDateComponent(date.getDate()) ;
-    };
     var a = formatDate(MonthFirstDate);
     var b = formatDate(MonthLastDate);
     $("#std").val(a);
@@ -43,10 +44,20 @@ $(document).on("click", "#log_out", function() {
 function clearSession() {
     sessionStorage.clear();
     inputSession();
+    $("#approve").attr("disabled", true);
 };
 function inputSession() {
-    if (sessionStorage.active_staff ==null) {
+    if (sessionStorage.active_staff == null) {
         let staff_code = prompt("Please enter your Emp No:", "");
+        if (staff_code === null) {
+            $('#active_staff').html("You need to input your Emp No!");
+            $('#log_out').html("Login!");
+            $("#machine_select option").remove();
+            $("#machine_select").append($("<option>").val(0).html("NO select")).removeClass("complete-input").addClass("no-input");
+            $("#list_check_select option").remove();
+            $("#list_check_select").append($("<option>").val(0).html("NO select")).removeClass("complete-input").addClass("no-input");
+            return;
+        }
         var fileName = "SearchStaff.php";
         var sendData = {
             staff_code: staff_code,
@@ -56,17 +67,57 @@ function inputSession() {
             sessionStorage.setItem("active_staff", JSON.stringify(ajaxReturnData));
             active = sessionStorage.getItem("active_staff");
             alert(JSON.parse(active)[0].staff_name + " is activating!");
+            if (JSON.parse(active)[0].position_id == 3 && $("#list_check_select").val() != 0) {
+                $("#approve").attr("disabled", false);
+            } else {
+                $("#approve").attr("disabled", true);
+            }
         } else {
             alert("Your Emp No dose not exist!");
             inputSession();
         }
     }
+    // if (JSON.parse(active)[0].position_id == 3) {
+    //     $("#approve").attr("disabled", false);
+    //     machineByManager();
+    // } else {
+    //     $("#approve").attr("disabled", true);
+    //     machine();
+    // }
+
     $('#active_staff').html(JSON.parse(active)[0].staff_name);
+    $('#log_out').html("Logout");
+    $("#machine_select option").remove();
+    $("#machine_select").append($("<option>").val(0).html("NO select")).removeClass("complete-input").addClass("no-input");
+    $("#list_check_select option").remove();
+    $("#list_check_select").append($("<option>").val(0).html("NO select")).removeClass("complete-input").addClass("no-input");
+    // machine();
+    if (JSON.parse(active)[0].position_id == 3) {
+        $("#approve").attr("disabled", false);
+        machineByManager();
+    } else {
+        $("#approve").attr("disabled", true);
+        machine();
+    }
 };
 function machine() {
     var fileName = "SelMachine.php";
     var sendData = {
         line_id: JSON.parse(active)[0].line_id
+    };
+    myAjax.myAjax(fileName, sendData);
+    $("#machine_select option").remove();
+    $("#machine_select").append($("<option>").val(0).html("NO select"));
+    ajaxReturnData.forEach(function(value) {
+        $("#machine_select").append(
+            $("<option>").val(value["id"]).html(value["machine"])
+        );
+    });
+};
+function machineByManager() {
+    var fileName = "SelMachineByManager.php";
+    var sendData = {
+        manager_id : JSON.parse(active)[0].id
     };
     myAjax.myAjax(fileName, sendData);
     $("#machine_select option").remove();
@@ -129,6 +180,12 @@ $(document).on("change", "#list_check_select", function() {
     } else {
         $(this).removeClass("no-input").addClass("complete-input");
         makeSummaryTable();
+        selApprove();
+    }
+    if (JSON.parse(active)[0].position_id == 3 && $("#list_check_select").val() != 0) {
+        $("#approve").attr("disabled", false);
+    } else {
+        $("#approve").attr("disabled", true);
     }
 });
 $(document).on("change", "#std", function() {
@@ -166,7 +223,6 @@ function renderHead(div, start, end) {
         daysInYear++;
         if (start.getMonth() !== c_month) {
             r_month += '<th colspan="' + daysInMonth + '">' + months[c_month] + '</th>';
-            // r_month1 += '<th>' + months[c_month] + '</th>';
             c_month = start.getMonth();
             daysInMonth = 0;
         }
@@ -190,4 +246,30 @@ function renderHead(div, start, end) {
     table = "<table id='summary__table'> <thead>" + r_year + r_year1 + r_month + r_month1 + r_days + "</thead> <tbody> </tbody> </table>";
 
     div.html(table);
+};
+$(document).on("click", "#approve", function () {
+    var fileName = "InsData.php";
+    var apm = new Date($("#std").val());
+      var sendData = {
+            approve_date : formatDate(new Date()),
+            staff_confirm_id : JSON.parse(active)[0].id,
+            approve_month : apm.getMonth() + 1,
+            list_check_id : $("#list_check_select").val(),
+      };
+    myAjax.myAjax(fileName, sendData);
+    selApprove();
+});
+function selApprove() {
+    var apm = new Date($("#std").val());
+    var fileName = "SelApprove.php";
+    var sendData = {
+        approve_month : apm.getMonth() + 1,
+        list_check_id : $("#list_check_select").val(),
+    };
+    myAjax.myAjax(fileName, sendData);
+    if (ajaxReturnData.length != 0) {
+        $("#approve_staff").html(("Apr by: " + ajaxReturnData[0].staff_name + " at :" + ajaxReturnData[0].approve_date));
+    } else {
+        $("#approve_staff").html("Not approved yet!");
+    }
 };

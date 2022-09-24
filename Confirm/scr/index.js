@@ -20,7 +20,7 @@ const myAjax = {
 
 $(function() {
     inputSession();
-    machine();
+    // machine();
     var formatDateComponent = function(dateComponent) {
         return (dateComponent < 10 ? '0' : '') + dateComponent;
       };
@@ -42,6 +42,14 @@ function clearSession() {
 function inputSession() {
     if (sessionStorage.active_staff ==null) {
         let staff_code = prompt("Please enter your Emp No:", "");
+        if (staff_code === null) {
+            $('#log_out').html("Login!");
+            $("#machine_select option").remove();
+            $("#machine_select").append($("<option>").val(0).html("NO select")).removeClass("complete-input").addClass("no-input");
+            $("#list_check_select option").remove();
+            $("#list_check_select").append($("<option>").val(0).html("NO select")).removeClass("complete-input").addClass("no-input");
+            return;
+        };
         var fileName = "SearchStaff.php";
         var sendData = {
             staff_code: staff_code,
@@ -57,6 +65,12 @@ function inputSession() {
         }
     }
     $('#active_staff').html(JSON.parse(active)[0].staff_name);
+    $('#log_out').html("Logout");
+    $("#machine_select option").remove();
+    $("#machine_select").append($("<option>").val(0).html("NO select")).removeClass("complete-input").addClass("no-input");
+    $("#list_check_select option").remove();
+    $("#list_check_select").append($("<option>").val(0).html("NO select")).removeClass("complete-input").addClass("no-input");
+    machine();
 };
 function machine() {
     var fileName = "SelMachine.php";

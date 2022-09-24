@@ -1,5 +1,5 @@
 body {
-    width: calc(1290px - 2px);
+    width: calc(1350px - 2px);
 }
 
 .main__wrapper {
@@ -20,18 +20,22 @@ body {
 }
 .input-block__outer {
     height: 25px;
-    width: 300px;
+    width: 320px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    padding-left: 5px;
 }
 .code_outer {
     border: 1px solid red;
 }
+.approve_area {
+    width: 600px;
+}
 #select_area {
     display: flex;
-    width: 750px;
+    width: 700px;
 }
 
 .input__title {
@@ -41,9 +45,12 @@ body {
 #end {
     width: 100px;
 }
-
+#approve_staff ,
+#approve_date {
+    width: 350px;
+}
 select {
-    width: 180px;
+    width: 140px;
     height: 22px;
     border: 1px solid #0000ff;
   }
@@ -115,17 +122,15 @@ div.calendar {
 }
 
 #summary__table tr td:nth-child(n+5) {
-    width: 28px;
+    width: 30px;
 }
 
 #summary__table tr th:nth-child(n+2) {
-    width: 28px;
+    width: 30px;
 }
-
 #summary__table tbody tr.selected-record {
     background-color: #c2ecff;
-  }
-
+}
 td {
     border: 1px solid black;
     width: 100px;

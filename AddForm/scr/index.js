@@ -22,10 +22,12 @@ $(function() {
     // inputSession();
     staff();
     line();
-    machine();
-    list_check();
-    list_content();
+    // machine();
+    // list_check();
+    // list_content();
     shecktype();
+    staffPosition();
+    staffLine();
 });
 function clearSession() {
     sessionStorage.clear();
@@ -49,6 +51,33 @@ function inputSession() {
         }
     }
 };
+
+function staffPosition() {
+    var fileName = "SelPosition.php";
+    var sendData = {
+    };
+    myAjax.myAjax(fileName, sendData);
+    $("#ins_staff_position option").remove();
+    $("#ins_staff_position").append($("<option>").val(0).html("NO select"));
+    ajaxReturnData.forEach(function(value) {
+        $("#ins_staff_position").append(
+            $("<option>").val(value["id"]).html(value["position"])
+        );
+    });
+};
+function staffLine() {
+    var fileName = "SelLine.php";
+    var sendData = {
+    };
+    myAjax.myAjax(fileName, sendData);
+    $("#ins_staff_line option").remove();
+    $("#ins_staff_line").append($("<option>").val(0).html("NO select"));
+    ajaxReturnData.forEach(function(value) {
+        $("#ins_staff_line").append(
+            $("<option>").val(value["id"]).html(value["line"])
+        );
+    });
+};
 function staff() {
     var fileName = "SelStaff.php";
     var sendData = {
@@ -68,8 +97,6 @@ function shecktype() {
             $("<option>").val(value["id"]).html(value["check_type"])
         );
     });
-  check_ins();
-  check_del();
   };
 function line() {
     var fileName = "SelLine.php";
@@ -90,6 +117,8 @@ function machine() {
     };
     myAjax.myAjax(fileName, sendData);
     fillTableBody(ajaxReturnData, $("#machine tbody"));
+    $("#list_check tbody").empty();
+    $("#list_content tbody").empty();
 };
 function list_check() {
     var fileName = "SelListCheck.php";
@@ -103,6 +132,7 @@ function list_check() {
     };
     myAjax.myAjax(fileName, sendData);
     fillTableBody(ajaxReturnData, $("#list_check tbody"));
+    $("#list_content tbody").empty();
 };
 function list_content() {
     var fileName = "SelListContent.php";
@@ -322,6 +352,7 @@ $(document).on("click", "#Insert_line", function() {
     var fileName = "InsLine.php";
     var sendObj = new Object();
     sendObj["line"] = $("#ins_line").val();
+    sendObj["manage_id"] = $("#staff__selected td:nth-child(1)").html();
     myAjax.myAjax(fileName, sendObj);
     line();
     $("#ins_line").val("");
@@ -470,7 +501,8 @@ function select_row(targetId, targetDom, id) {
 };
 
 function InsLineCheck() {
-    if ($("#ins_line").val().length == 0) {
+    if (($("#ins_line").val().length == 0)||
+        (!$("#staff tbody tr").hasClass("selected-record"))) {
         $("#Insert_line").prop("disabled", true);
     } else {
         $("#Insert_line").prop("disabled", false);

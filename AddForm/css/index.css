@@ -250,7 +250,7 @@ object {
 
 #staff tbody {
     width: 505px;
-    height: 150px;
+    height: 260px;
     overflow: auto;
 }
 #staff tr th:nth-child(1),
