@@ -20,8 +20,11 @@ FROM
     t_line ON t_line.id = t_staff.line_id
     ORDER BY CASE position_id
     WHEN '3' THEN 9
-    WHEN '1' THEN 8
-    WHEN '2' THEN 7
+    WHEN '6' THEN 8
+    WHEN '5' THEN 7
+    WHEN '4' THEN 6
+    WHEN '1' THEN 5
+    WHEN '2' THEN 4
     ELSE 0
     END DESC;";
     $stmt = $dbh->getInstance()->prepare($sql);
