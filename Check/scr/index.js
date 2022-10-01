@@ -175,6 +175,10 @@ function selectValue(seletedId) {
     {
         id : 2,
         sel : "X"
+    },
+    {
+        id : 3,
+        sel : "△"
     }]
     select_value.forEach(function(element) {
         if (element["id"] == seletedId) {

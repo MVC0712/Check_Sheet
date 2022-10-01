@@ -11,32 +11,24 @@ try {
     t10.check_date,
     t10.staff_name,
     t_staff.staff_name as stfc,
+    line,
     t10.machine,
-    t10.check_type,
-    t10.content,
-    t10.description,
-    t10.vl
+    t10.list_check,
+    t10.midd,
+    t10.cid
 FROM
     (SELECT 
         t_record.id,
-            DATE_FORMAT(check_date, '%y-%m-%d') AS check_date,
+            check_date,
             staff_name,
             staff_comfirm_id,
             line,
             machine,
             check_type,
             content,
-            description,
-            CASE content_type_id
-                WHEN
-                    1
-                THEN
-                    CASE check_value
-                        WHEN 1 THEN 'O'
-                        ELSE 'X'
-                    END
-                ELSE check_value
-            END AS vl
+            list_check,
+            t_list_check.id AS cid,
+            t_machine.id AS midd
     FROM
         check_sheet.t_record
     LEFT JOIN t_staff ON t_staff.id = t_record.staff_check_id
@@ -48,6 +40,7 @@ FROM
     LEFT JOIN t_line ON t_line.id = t_machine.line_id
     WHERE
         t_line.id = '$line_id'
+    GROUP BY machine_id , check_date
     ORDER BY check_date DESC , line ASC , machine ASC , check_type ASC) AS t10
         LEFT JOIN
     t_staff ON t_staff.id = t10.staff_comfirm_id;";

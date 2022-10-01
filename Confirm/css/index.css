@@ -172,35 +172,34 @@ button {
 }
 #summary__table th:nth-child(2),
 #summary__table td:nth-child(2) {
-    width: 60px;
+    width: 70px;
     text-align: center;
 }
 #summary__table th:nth-child(3),
 #summary__table td:nth-child(3) {
-    width: 110px;
+    width: 150px;
 }
 #summary__table th:nth-child(4),
 #summary__table td:nth-child(4) {
-    width: 110px;
+    width: 130px;
 }
 #summary__table th:nth-child(5),
 #summary__table td:nth-child(5) {
-    width: 80px;
+    width: 130px;
 }
 #summary__table th:nth-child(6),
 #summary__table td:nth-child(6) {
-    width: 50px;
+    width: 130px;
 }
 #summary__table th:nth-child(7),
 #summary__table td:nth-child(7) {
-    width: 100px;
+    width: 150px;
 }
 #summary__table th:nth-child(8),
 #summary__table td:nth-child(8) {
-    width: 205px;
+    display: none;
 }
 #summary__table th:nth-child(9),
 #summary__table td:nth-child(9) {
-    width: 40px;
-    text-align: center;
+    display: none;
 }

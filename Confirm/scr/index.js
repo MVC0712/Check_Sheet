@@ -20,7 +20,6 @@ const myAjax = {
 
 $(function() {
     inputSession();
-    // machine();
     var formatDateComponent = function(dateComponent) {
         return (dateComponent < 10 ? '0' : '') + dateComponent;
       };
@@ -43,7 +42,7 @@ function inputSession() {
     if (sessionStorage.active_staff ==null) {
         let staff_code = prompt("Please enter your Emp No:", "");
         if (staff_code === null) {
-            $('#log_out').html("Login!");
+            $('#log_out').html("Login");
             $("#machine_select option").remove();
             $("#machine_select").append($("<option>").val(0).html("NO select")).removeClass("complete-input").addClass("no-input");
             $("#list_check_select option").remove();
@@ -279,7 +278,6 @@ $(document).on("keyup", ".text-input", function() {
     }
     checkInput();
 });
-
 $(document).on("click", "#confirm__button", function () {
     var fileName = "InsData.php";
     tableData = getTableData($("#content tbody tr"))
@@ -330,3 +328,20 @@ function checkInput() {
       $("#confirm__button").attr("disabled", true);
     } 
 };
+$(document).on("click", "#summary__table tbody tr", function() {
+    if (!$(this).hasClass("selected-record")) {
+        $(this).parent().find("tr").removeClass("selected-record");
+        $(this).addClass("selected-record");
+        $("#summary__selected").removeAttr("id");
+        $(this).attr("id", "summary__selected");
+        $("#check_date").val($("#summary__selected td:nth-child(2)").html());
+        $("#machine_select").val($("#summary__selected td:nth-child(8)").html()).removeClass("no-input").addClass("complete-input");
+        list_check();
+        $("#list_check_select").val($("#summary__selected td:nth-child(9)").html()).removeClass("no-input").addClass("complete-input");
+        list_content();
+    } else {
+        $(this).removeClass("selected-record");
+        $(this).removeAttr("id");
+    }
+    checkInput();
+});

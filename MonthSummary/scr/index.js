@@ -77,14 +77,11 @@ function inputSession() {
             inputSession();
         }
     }
-    // if (JSON.parse(active)[0].position_id == 3) {
-    //     $("#approve").attr("disabled", false);
-    //     machineByManager();
-    // } else {
-    //     $("#approve").attr("disabled", true);
-    //     machine();
-    // }
-
+    if (JSON.parse(active)[0].position_id == 3 && $("#list_check_select").val() != 0) {
+        $("#approve").attr("disabled", false);
+    } else {
+        $("#approve").attr("disabled", true);
+    }
     $('#active_staff').html(JSON.parse(active)[0].staff_name);
     $('#log_out').html("Logout");
     $("#machine_select option").remove();
@@ -95,7 +92,7 @@ function inputSession() {
     if (JSON.parse(active)[0].position_id == 3) {
         $("#approve").attr("disabled", false);
         machineByManager();
-    } else {
+    } else if ((JSON.parse(active)[0].position_id != 3 && $("#list_check_select").val() == 0)) {
         $("#approve").attr("disabled", true);
         machine();
     }
@@ -145,7 +142,6 @@ function list_check() {
 function makeSummaryTable() {
     var fileName = "SelSummary.php";
     var sendObj = new Object();
-
     sendObj["start_s"] = $('#std').val();
     sendObj["end_s"] = $("#end").val();
     sendObj["list_check_id"] = $("#list_check_select").val();
@@ -165,18 +161,16 @@ $(document).on("change", "#machine_select", function() {
         $(this).removeClass("complete-input").addClass("no-input");
         $("#list_check_select option").remove();
         $("#list_check_select").removeClass("complete-input").addClass("no-input");
-        $("#content tbody").empty();
     } else {
         $(this).removeClass("no-input").addClass("complete-input");
         $("#list_check_select").removeClass("complete-input").addClass("no-input");
-        $("#content tbody").empty();
         list_check();
     }
+    $("#summary__table tbody").empty();
 });
 $(document).on("change", "#list_check_select", function() {
     if ($(this).val() == 0) {
         $(this).removeClass("complete-input").addClass("no-input");
-        $("#content tbody").empty();
     } else {
         $(this).removeClass("no-input").addClass("complete-input");
         makeSummaryTable();
@@ -197,10 +191,10 @@ $(document).on("change", "#end", function() {
     makeSummaryTable();
 });
 
-var weekday = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+// var weekday = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+var weekday = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 var months = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
-
 function renderHead(div, start, end) {
     var c_year = start.getFullYear();
     var r_year = "<tr> <th rowspan='4' style ='width: 100px;'>Content</th> <th rowspan='4' style ='width: 150px;'>Description</th> <th rowspan='4' style ='width: 50px;'>Type</th>";
@@ -227,7 +221,6 @@ function renderHead(div, start, end) {
             daysInMonth = 0;
         }
         daysInMonth++;
-
         r_days += '<th>' + start.getDate() + '</th>';
         r_days2 += '<th>' + weekday[start.getDay()] + '</th>';
         r_month1 += '<th>' + months[c_month] + '</th>';
@@ -243,8 +236,14 @@ function renderHead(div, start, end) {
     r_month1 += '<th>' + months[c_month] + '</th>';
     r_month += "</tr>";
     r_month1 += "</tr>";
-    table = "<table id='summary__table'> <thead>" + r_year + r_year1 + r_month + r_month1 + r_days + "</thead> <tbody> </tbody> </table>";
-
+    table = "<table id='summary__table'> <thead>" + 
+            r_year + 
+            // r_year1 + 
+            r_month + 
+            // r_month1 + 
+            r_days + 
+            r_days2 + 
+        "</thead> <tbody> </tbody> </table>";
     div.html(table);
 };
 $(document).on("click", "#approve", function () {
