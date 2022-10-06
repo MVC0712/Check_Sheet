@@ -15,7 +15,7 @@ if ($dbh->getInstance() === null) {
 
 try {
     foreach ($data_json as $val) {
-        $sql_paramater[] = "('{$val[0]}', '{$staff_check_id}', '{$check_date}', '{$val[5]}')";
+        $sql_paramater[] = "('{$val[0]}', '{$staff_check_id}', '{$check_date}', '{$val[7]}')";
 
         $sqlsub = "DELETE FROM t_record WHERE content_id = content_id AND check_date = '{$check_date}'";
         $stmt = $dbh->getInstance()->prepare($sqlsub);

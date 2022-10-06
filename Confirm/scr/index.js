@@ -37,6 +37,7 @@ $(document).on("click", "#log_out", function() {
 function clearSession() {
     sessionStorage.clear();
     inputSession();
+    makeSummaryTable();
 };
 function inputSession() {
     if (sessionStorage.active_staff ==null) {

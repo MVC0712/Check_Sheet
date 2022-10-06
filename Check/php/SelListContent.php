@@ -11,7 +11,9 @@ try {
     content,
     description,
     check_type,
-    content_type_id
+    content_type_id,
+    min_value,
+    max_value
 FROM
     check_sheet.t_content
         LEFT JOIN

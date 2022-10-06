@@ -38,6 +38,7 @@ $(document).on("click", "#log_out", function() {
 function clearSession() {
     sessionStorage.clear();
     inputSession();
+    makeSummaryTable();
 };
 function inputSession() {
     if (sessionStorage.active_staff ==null) {
@@ -143,7 +144,7 @@ function fillTableBody(data, tbodyDom) {
         if (trVal.content_type_id == 1) {
             $("<td>").append(selectValue(1)).appendTo(newTr);
         }else {
-            $("<td>").append($("<input>").val("").addClass("no-input text-input")).appendTo(newTr);
+            $("<td>").append($("<input>").val("").addClass("no-input number-input")).appendTo(newTr);
         }
         $(newTr).appendTo(tbodyDom);
     });
@@ -253,8 +254,27 @@ $(document).on("click", "#content tbody tr", function() {
         $("#list_content__selected").removeAttr("id");
         $(this).attr("id", "list_content__selected");
     } else {
-        $(this).removeClass("selected-record");
-        $(this).removeAttr("id");
+        // $(this).removeClass("selected-record");
+        // $(this).removeAttr("id");
+    }
+    checkInput();
+});
+$(document).on("keyup", "#content tbody tr td input", function() {
+    var min = Number($("#list_content__selected td:nth-child(6)").html());
+    var max = Number($("#list_content__selected td:nth-child(7)").html());
+    var value = Number($("#list_content__selected td:nth-child(8) input").val());
+    if($.isNumeric($("#list_content__selected td:nth-child(8) input").val())){
+        $(this).removeClass("no-input").addClass("complete-input");
+    } else {
+        $(this).removeClass("complete-input").addClass("no-input");
+    }
+    if (value < min){
+        $("#list_content__selected td:nth-child(8) input").removeClass("complete-input").addClass("no-input");
+    } else if (value > max){
+        $("#list_content__selected td:nth-child(8) input").removeClass("complete-input").addClass("no-input");
+    } else {
+        $("#list_content__selected td:nth-child(8) input").removeClass("no-input").addClass("complete-input");
+        console.log("OK")
     }
     checkInput();
 });
@@ -282,7 +302,14 @@ $(document).on("keyup", ".text-input", function() {
     }
     checkInput();
 });
-
+// $(document).on("keyup", ".number-input", function() {
+//     if($.isNumeric($(this).val())){
+//         $(this).removeClass("no-input").addClass("complete-input");
+//     } else {
+//         $(this).removeClass("complete-input").addClass("no-input");
+//     }
+//     checkInput();
+// });
 $(document).on("click", "#save__button", function () {
     var fileName = "InsData.php";
     tableData = getTableData($("#content tbody tr"))

@@ -40,6 +40,7 @@ $(function() {
 $(document).on("click", "#log_out", function() {
     $('#active_staff').html('');
     clearSession();
+    $("#summary__table tbody").empty();
 });
 function clearSession() {
     sessionStorage.clear();
@@ -90,7 +91,7 @@ function inputSession() {
     $("#list_check_select").append($("<option>").val(0).html("NO select")).removeClass("complete-input").addClass("no-input");
     // machine();
     if (JSON.parse(active)[0].position_id == 3) {
-        $("#approve").attr("disabled", false);
+        // $("#approve").attr("disabled", false);
         machineByManager();
     } else if ((JSON.parse(active)[0].position_id != 3 && $("#list_check_select").val() == 0)) {
         $("#approve").attr("disabled", true);

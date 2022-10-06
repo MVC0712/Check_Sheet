@@ -130,11 +130,17 @@ button {
     display: none;
 }
 #content th:nth-child(6),
-#content td:nth-child(6) {
+#content td:nth-child(6),
+#content th:nth-child(7),
+#content td:nth-child(7) {
+    width: 55px;
+}
+#content th:nth-child(8),
+#content td:nth-child(8) {
     width: 70px;
 }
-#content td:nth-child(6) input,
-#content td:nth-child(6) select {
+#content td:nth-child(8) input,
+#content td:nth-child(8) select {
     border: none;
     width: 96%;
 }
