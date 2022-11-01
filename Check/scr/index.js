@@ -112,6 +112,7 @@ function list_check() {
 function list_content() {
     var fileName = "SelListContent.php";
     var sendData = {
+        check_date: $("#check_date").val(),
         list_check_id : $("#list_check_select").val(),
     };
     myAjax.myAjax(fileName, sendData);

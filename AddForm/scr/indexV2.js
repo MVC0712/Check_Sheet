@@ -223,23 +223,20 @@ function lineSelect(seletedId) {
 };
 function checkType(seletedId) {
     let targetDom = $("<select>");
-    var ctype = [{
-        id : 1,
-        ct : "Daily"
-    },{
-        id : 2,
-        ct : "Weekly"
-    }]
-    ctype.forEach(function(element) {
+    let fileName = "SelCheckType.php";
+    let sendData = {
+    };
+    myAjax.myAjax(fileName, sendData);
+    ajaxReturnData.forEach(function(element) {
         if (element["id"] == seletedId) {
             $("<option>")
-                .html(element["ct"])
+                .html(element["check_type"])
                 .val(element["id"])
                 .prop("selected", true)
                 .appendTo(targetDom);
         } else {
             $("<option>")
-                .html(element["ct"])
+                .html(element["check_type"])
                 .val(element["id"])
                 .appendTo(targetDom);
         }
