@@ -104,7 +104,7 @@ GROUP BY content_id) AS ts ON t_content.id = ts.content_id
 LEFT JOIN
     m_check_type ON m_check_type.id = t_content.check_type_id
 WHERE
-    t_content.list_check_id = '$list_check_id'
+    t_content.list_check_id = '$list_check_id' AND ts.id IS NOT NULL
 GROUP BY ttt ";
 
 $sql = $sql2.$sql4;
@@ -149,7 +149,7 @@ GROUP BY content_id) AS ts ON t_content.id = ts.content_id
 LEFT JOIN
     m_check_type ON m_check_type.id = t_content.check_type_id
 WHERE
-    t_content.list_check_id = '$list_check_id'
+    t_content.list_check_id = '$list_check_id' AND ts.id IS NOT NULL
 GROUP BY ttt ;";
 
 $sql = $sql.$sql6;
