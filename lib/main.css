@@ -145,3 +145,9 @@ select {
   height: 22px;
   border: 1px solid #0000ff;
 }
+div button {
+  height: 20px;
+  width: auto;
+  background-color: rgb(116, 223, 255);
+  text-decoration: none;
+}

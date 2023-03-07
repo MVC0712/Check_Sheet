@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<div style="flex-direction: row; display:flex;">
+    <button id="add_form">Add form</button>
+    <button id="check">Check page</button>
+    <button id="confirm">Confirm page</button>
+    <button id="month_summary">Month summary page</button>
+</div>
+<script src="./Lib/jquery.min.js"></script>
+    <script>
+        $(document).on("click", "#add_form", function () {
+            window.open("/Check_Sheet/AddForm","__self");
+        });
+        $(document).on("click", "#check", function () {
+            window.open("/Check_Sheet/Check","__self");
+        });
+        $(document).on("click", "#confirm", function () {
+            window.open("/Check_Sheet/Confirm","__self");
+        });
+        $(document).on("click", "#month_summary", function () {
+            window.open("/Check_Sheet/MonthSummary","__self");
+        });
+</script>

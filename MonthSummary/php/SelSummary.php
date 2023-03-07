@@ -150,10 +150,25 @@ LEFT JOIN
     m_check_type ON m_check_type.id = t_content.check_type_id
 WHERE
     t_content.list_check_id = '$list_check_id' AND ts.id IS NOT NULL
-GROUP BY ttt ;";
+GROUP BY ttt 
+ORDER BY CASE check_type
+    WHEN 'Daily' THEN 9
+    WHEN 'Weekly' THEN 8
+    WHEN 'Monthly' THEN 7
+    WHEN 'Quarter' THEN 6
+    WHEN '6 Month' THEN 5
+    WHEN 'Annual' THEN 4
+    ELSE 0
+END DESC , 
+CASE content
+    WHEN 'Check By' THEN 8
+    WHEN 'Confirm By' THEN 9
+    ELSE 0
+END ASC
+;";
 
 $sql = $sql.$sql6;
-// print_r($sql);
+// print_r($sql);  
 try {
     $stmt = $dbh->getInstance()->prepare($sql);
     $stmt->execute();
