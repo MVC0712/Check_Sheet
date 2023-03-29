@@ -45,6 +45,9 @@ body {
 #end {
     width: 100px;
 }
+#month {
+    width: 180px;
+}
 #approve_staff ,
 #approve_date {
     width: 350px;
